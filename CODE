@@ -1,0 +1,356 @@
+/* IF U WANT COPY AND TRY TO BUILD IT FOR U SELF JUST ORDER IT  */
+
+// /* 📦 package.json
+
+// {
+//   "name": "todo-next-ts",
+//   "version": "1.0.0",
+//   "private": true,
+//   "scripts": {
+//     "dev": "next dev",
+//     "build": "next build",
+//     "start": "next start",
+//     "lint": "next lint",
+//     "prisma": "prisma"
+//   },
+//   "dependencies": {
+//     "@prisma/client": "^5.0.0",
+//     "next": "14.1.0",
+//     "react": "18.2.0",
+//     "react-dom": "18.2.0"
+//   },
+//   "devDependencies": {
+//     "autoprefixer": "^10.4.0",
+//     "postcss": "^8.4.0",
+//     "prisma": "^5.0.0",
+//     "tailwindcss": "^3.3.0",
+//     "typescript": "^5.0.0"
+//   }
+// }
+
+// 🛠️ tsconfig.json
+
+// {
+//   "compilerOptions": {
+//     "target": "es5",
+//     "lib": ["dom", "dom.iterable", "esnext"],
+//     "allowJs": true,
+//     "skipLibCheck": true,
+//     "strict": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "noEmit": true,
+//     "esModuleInterop": true,
+//     "module": "esnext",
+//     "moduleResolution": "node",
+//     "resolveJsonModule": true,
+//     "isolatedModules": true,
+//     "jsx": "preserve",
+//     "incremental": true,
+//     "types": ["node"]
+//   },
+//   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+//   "exclude": ["node_modules"]
+// }
+
+// 🎨 tailwind.config.js
+
+// /** @type {import('tailwindcss').Config} */
+// module.exports = {
+//   content: [
+//     "./pages/**/*.{js,ts,jsx,tsx}",
+//     "./components/**/*.{js,ts,jsx,tsx}",
+//     "./context/**/*.{js,ts,jsx,tsx}"
+//   ],
+//   theme: {
+//     extend: {},
+//   },
+//   plugins: [],
+// };
+
+// 🔧 postcss.config.js
+
+// module.exports = {
+//   plugins: {
+//     tailwindcss: {},
+//     autoprefixer: {},
+//   },
+// };
+
+// 📘 styles/globals.css
+
+// @tailwind base;
+// @tailwind components;
+// @tailwind utilities;
+
+// 📄 prisma/schema.prisma
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
+
+// model Task {
+//   id        String   @id @default(uuid())
+//   title     String
+//   completed Boolean  @default(false)
+//   createdAt DateTime @default(now())
+// }
+
+// 🔌 lib/db.ts
+
+// import { PrismaClient } from '@prisma/client';
+
+// const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
+
+// export const prisma =
+//   globalForPrisma.prisma ||
+//   new PrismaClient({ log: ['query'] });
+
+// if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
+// 🧠 types/task.ts
+
+// export interface Task {
+//   id: string;
+//   title: string;
+//   completed: boolean;
+// }
+
+// 🔁 /components/TaskItem.tsx
+
+// import React from "react";
+// import { Task } from "../types/task";
+
+// interface Props {
+//   task: Task;
+//   onToggle: (id: string) => void;
+//   onDelete: (id: string) => void;
+// }
+
+// const TaskItem: React.FC<Props> = ({ task, onToggle, onDelete }) => (
+//   <li className="flex items-center justify-between p-3 border-b border-gray-300">
+//     <div className="flex items-center space-x-3">
+//       <input
+//         type="checkbox"
+//         checked={task.completed}
+//         onChange={() => onToggle(task.id)}
+//         className="w-5 h-5 cursor-pointer"
+//       />
+//       <span className={`text-lg ${task.completed ? "line-through text-gray-400" : ""}`}>
+//         {task.title}
+//       </span>
+//     </div>
+//     <button
+//       onClick={() => onDelete(task.id)}
+//       className="text-red-500 hover:text-red-700 font-bold"
+//       aria-label="Delete task"
+//     >
+//       &times;
+//     </button>
+//   </li>
+// );
+
+// export default TaskItem;
+
+// 🌐 /context/TaskContext.tsx
+
+// import React, { createContext, useContext, useEffect, useState } from "react";
+// import { Task } from "../types/task";
+
+// interface TaskContextType {
+//   tasks: Task[];
+//   addTask: (title: string) => Promise<void>;
+//   toggleTask: (id: string) => Promise<void>;
+//   deleteTask: (id: string) => Promise<void>;
+//   loading: boolean;
+// }
+
+// const TaskContext = createContext<TaskContextType | undefined>(undefined);
+
+// export const useTasks = () => {
+//   const context = useContext(TaskContext);
+//   if (!context) throw new Error("useTasks must be used within TaskProvider");
+//   return context;
+// };
+
+// export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+//   const [tasks, setTasks] = useState<Task[]>([]);
+//   const [loading, setLoading] = useState<boolean>(false);
+
+//   const fetchTasks = async () => {
+//     setLoading(true);
+//     const res = await fetch("/api/tasks");
+//     const data: Task[] = await res.json();
+//     setTasks(data);
+//     setLoading(false);
+//   };
+
+//   useEffect(() => { fetchTasks(); }, []);
+
+//   const addTask = async (title: string) => {
+//     const res = await fetch("/api/tasks", {
+//       method: "POST", headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ title }),
+//     });
+//     if (!res.ok) throw new Error("Failed to add task");
+//     const newTask: Task = await res.json();
+//     setTasks(prev => [newTask, ...prev]);
+//   };
+
+//   const toggleTask = async (id: string) => {
+//     const res = await fetch(`/api/tasks/${id}`, { method: "PATCH" });
+//     if (!res.ok) throw new Error("Failed to toggle task");
+//     const updatedTask: Task = await res.json();
+//     setTasks(prev => prev.map(task => task.id === updatedTask.id ? updatedTask : task));
+//   };
+
+//   const deleteTask = async (id: string) => {
+//     const res = await fetch(`/api/tasks/${id}`, { method: "DELETE" });
+//     if (!res.ok) throw new Error("Failed to delete task");
+//     setTasks(prev => prev.filter(task => task.id !== id));
+//   };
+
+//   return (
+//     <TaskContext.Provider value={{ tasks, addTask, toggleTask, deleteTask, loading }}>
+//       {children}
+//     </TaskContext.Provider>
+//   );
+// };
+
+// 🏠 /pages/index.tsx
+
+// import React, { useState } from "react";
+// import { TaskProvider, useTasks } from "../context/TaskContext";
+// import TaskItem from "../components/TaskItem";
+
+// const TaskApp = () => {
+//   const { tasks, addTask, toggleTask, deleteTask, loading } = useTasks();
+//   const [newTask, setNewTask] = useState("");
+//   const [error, setError] = useState("");
+
+//   const handleAdd = async () => {
+//     if (!newTask.trim()) return setError("El título no puede estar vacío");
+//     if (newTask.trim().length < 3) return setError("El título debe tener al menos 3 caracteres");
+//     try {
+//       await addTask(newTask);
+//       setNewTask("");
+//       setError("");
+//     } catch {
+//       setError("Error al agregar la tarea");
+//     }
+//   };
+
+//   return (
+//     <div className="max-w-md mx-auto mt-10 p-5 bg-white rounded shadow-md">
+//       <h1 className="text-2xl font-bold mb-4">Lista de Tareas</h1>
+//       <div className="flex mb-4 space-x-2">
+//         <input
+//           type="text"
+//           value={newTask}
+//           onChange={e => setNewTask(e.target.value)}
+//           placeholder="Nueva tarea"
+//           className="flex-grow border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           onKeyDown={e => e.key === "Enter" && handleAdd()}
+//         />
+//         <button
+//           onClick={handleAdd}
+//           className="bg-blue-500 text-white px-4 rounded hover:bg-blue-600"
+//         >
+//           Agregar
+//         </button>
+//       </div>
+//       {error && <p className="text-red-600 mb-4">{error}</p>}
+//       {loading ? (
+//         <p>Cargando tareas...</p>
+//       ) : tasks.length === 0 ? (
+//         <p>No hay tareas</p>
+//       ) : (
+//         <ul>
+//           {tasks
+//             .sort((a, b) => Number(a.completed) - Number(b.completed))
+//             .map(task => (
+//               <TaskItem
+//                 key={task.id}
+//                 task={task}
+//                 onToggle={toggleTask}
+//                 onDelete={deleteTask}
+//               />
+//             ))}
+//         </ul>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default function Home() {
+//   return (
+//     <TaskProvider>
+//       <TaskApp />
+//     </TaskProvider>
+//   );
+// }
+
+// 🧩 Desarrollo & Ejecución
+// Scripts útiles:
+
+// npm install
+// npx prisma db push
+// npm run dev
+
+// Abre:
+
+// http://localhost:3000
+
+// 📌 README sugerido:
+
+// # To-Do List App - Next.js + TypeScript + Tailwind + Prisma
+
+// ## Descripción
+// App para gestionar tareas con persistencia en SQLite vía Prisma.
+
+// ## Requisitos
+// - Node.js ≥16
+// - npm
+
+// ## Instalación
+// ```bash
+// npm install
+// npx prisma db push
+// npm run dev
+
+// Luego abre http://localhost:3000
+// Funcionalidades
+
+//     Crear tareas
+
+//     Marcar completadas
+
+//     Eliminar
+
+//     Ordenadas por estado
+
+//     Validación simple del input
+
+// Estructura del proyecto
+
+//     /pages: front + API routes
+
+//     /components: UI
+
+//     /context: React Context
+
+//     /lib: Prisma client
+
+//     /prisma: esquema
+
+//     /styles: styles globales
+
+
+// ---
+
+// De esta forma, tienes todo el código bien ordenado y listo para copiar o empezar a trabajar. Si quieres, puedo ayudarte a subirlo al repositorio, generar `.gitignore`, o incluir ejemplos adicionales. 🚀
+// ::contentReference[oaicite:0]{index=0}
