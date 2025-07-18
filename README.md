@@ -1,104 +1,109 @@
-DEPENDENCIAS
+✅ Dependencias e instalación
 
 npm install
 npm install react react-dom next
 npm install tailwindcss postcss autoprefixer
 npm install prisma @prisma/client
 
+📁 Ignorar carpetas pesadas
 
-# ✅ Aplicación ToDo con Next.js, TypeScript, TailwindCSS, Prisma y SQLite
+# 1. Ignorar `node_modules` y `.next`
+echo -e "/node_modules/\n/.next/" >> .gitignore
 
-Una aplicación web para gestionar tareas pendientes, construida con tecnologías modernas del ecosistema fullstack.
+# 2. Eliminar del control de versiones (sin borrar localmente)
+git rm -r --cached node_modules .next || echo "Nada para eliminar en caché"
 
----
+# 3. Añadir .gitignore al staging
+git add .gitignore
+git commit -m "Ignore node_modules y .next"
 
-## 🚀 Funcionalidades
+# 4. Subir cambios al repositorio remoto
+git push -u origin main
 
-- ✏️ Agregar tareas nuevas
-- ✅ Marcar tareas como completadas
-- 🗑️ Eliminar tareas
-- 📊 Mostrar tareas ordenadas por estado y fecha
-- 🧠 Estado global con Context API
-- 💾 Persistencia con base de datos local SQLite usando Prisma ORM
+🛠️ Aplicación To‑Do con Next.js + TypeScript + TailwindCSS + Prisma + SQLite
 
----
+Web para gestionar tareas pendientes, con tecnologías modernas.
+🚀 Funcionalidades
 
-## 🛠️ Tecnologías utilizadas
+    Crear nuevas tareas
 
-- ✅ [Next.js](https://nextjs.org/)
-- ✅ [React 18](https://reactjs.org/)
-- ✅ [TypeScript](https://www.typescriptlang.org/)
-- ✅ [TailwindCSS](https://tailwindcss.com/)
-- ✅ [Prisma ORM](https://www.prisma.io/)
-- ✅ [SQLite](https://sqlite.org/)
+    Marcar tareas como completadas
 
----
+    Eliminar tareas
 
-## 📁 Estructura del Proyecto
+    Mostrar tareas ordenadas (pendientes arriba)
+
+    Estado global con Context API
+
+    Persistencia en SQLite mediante Prisma
+
+🛠️ Tecnologías
+
+    Next.js
+
+    React 18
+
+    TypeScript
+
+    TailwindCSS
+
+    Prisma ORM
+
+    SQLite
+
+📁 Estructura del Proyecto
 
 todoLIST/
-├── components/ # Componentes React como TaskItem
-├── context/ # Context API (TaskContext)
-├── lib/ # Cliente de Prisma
-├── pages/ # Rutas de Next.js
-│ ├── api/tasks/ # Endpoints API (GET, POST, PATCH, DELETE)
-│ └── index.tsx # Página principal
-├── prisma/ # Esquema Prisma y DB
-├── styles/ # Estilos globales (Tailwind)
-├── types/ # Tipos de TypeScript
-├── tailwind.config.js # Configuración Tailwind
-├── postcss.config.js # Configuración PostCSS
-├── tsconfig.json # Configuración TypeScript
-├── package.json # Dependencias y scripts
-└── README.md # Esta documentación
+├── components/        # Componente TaskItem
+├── context/           # TaskContext
+├── lib/               # Cliente de Prisma
+├── pages/
+│   ├── api/tasks/     # Endpoints: GET, POST, PATCH, DELETE
+│   └── index.tsx      # Página principal
+├── prisma/            # Schema y DB
+├── styles/            # Estilos globales Tailwind
+├── types/             # Tipos TS
+├── tailwind.config.js  
+├── postcss.config.js  
+├── tsconfig.json  
+├── package.json  
+└── README.md
 
+⚙️ Cómo ejecutar el proyecto
 
----
+    Clona el repo:
 
-## ⚙️ ¿Cómo ejecutar el proyecto?
+git clone https://github.com/fredoomsearch/Listadetareas.git (O DESCARGAR ZIP)
+cd Listadetareas
 
-1. **Clona el repositorio o descarga el .zip:**
-
-```bash
-git clone https://github.com/tuusuario/todo-next-ts.git
-cd todo-next-ts
-
-    Instala las dependencias:
+    Instala dependencias:
 
 npm install
 
-    Inicializa Prisma y la base de datos:
+    Configura Prisma y la DB:
 
 npx prisma generate
---------------------------------------------------------------------------------
-¿Qué hace npx prisma migrate dev --name init?
-
-    npx: Ejecuta el paquete Prisma sin instalarlo globalmente.
-
-    prisma migrate dev: Prisma detecta los cambios que hiciste en el archivo schema.prisma y genera una migración SQL para actualizar la base de datos.
-
-    --name init: Le das un nombre a esta migración, en este caso "init" (por inicial), para identificarla fácilmente luego.
 npx prisma migrate dev --name init
------------------------------------------------
-    Levanta el servidor de desarrollo:
+
+    Levanta el dev server:
 
 npm run dev
 
-Luego abre en tu navegador:
+    Abre en el navegador:
 
 http://localhost:3000
 
-📊 Acceder a la base de datos visualmente
+🧪 Prisma Studio (opcional)
 
-Puedes abrir una interfaz gráfica para gestionar tus datos con Prisma Studio:
+Administra tu base en una interfaz gráfica:
 
 npx prisma studio
 
-Esto abre una ventana en el navegador:
-http://localhost:5555
-📘 Esquema de base de datos Prisma
+Luego visita:
 
-Archivo: prisma/schema.prisma
+http://localhost:5555
+
+🗂️ Prisma Schema (prisma/schema.prisma)
 
 datasource db {
   provider = "sqlite"
@@ -116,7 +121,7 @@ model Task {
   createdAt DateTime @default(now())
 }
 
-🧪 Scripts disponibles
+📋 Scripts disponibles (package.json)
 
 "scripts": {
   "dev": "next dev",
@@ -126,22 +131,34 @@ model Task {
   "lint": "next lint"
 }
 
-✅ Verificación final del test técnico
-Requisito	Cumplido
-Next.js con TypeScript	✅
+📌 Errores comunes
+
+    Error al lanzar la app: Si tienes una versión de Node.js antigua (v12), actualiza a v20 usando nvm.
+    Problema detectado en:
+
+    j@julian-K45VS:...$ npx next dev
+    SyntaxError: Unexpected token '?'
+
+    Solución: cambia a Node ≥ 16.
+
+👍 Check final del test técnico
+Requisito	Estado
+Next.js + TypeScript	✅
 TailwindCSS	✅
-Tipado de datos con interfaces	✅
+Tipado con interfaces	✅
 Componentes separados	✅
-Context API para estado global	✅
-Validaciones básicas en el formulario	✅
-CRUD completo con API y DB	✅
+Context API	✅
+Validaciones en formulario	✅
+CRUD con API y DB	✅
 Prisma + SQLite	✅
 Documentación y estructura clara	✅
-📌 Recomendaciones
+🔁 Recomendaciones
 
-    🔁 Ejecuta npx prisma migrate dev cada vez que modifiques el modelo de datos.
+    Ejecuta npx prisma migrate dev tras modificar el schema.
 
-    🧹 Si quieres reiniciar todo: elimina dev.db, borra las migraciones y corre todo de nuevo.
+    Si quieres reiniciar todo, elimina dev.db, borra carpetas prisma/migrations y repite setup.
+
+    Usa nvm para manejar versiones de Node fácilmente
 
 
 
