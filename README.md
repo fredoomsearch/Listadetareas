@@ -1,5 +1,6 @@
 DEPENDENCIAS
 
+npm install
 npm install react react-dom next
 npm install tailwindcss postcss autoprefixer
 npm install prisma @prisma/client
